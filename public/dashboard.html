@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; /* Assuming a light grey background */
+        }
+
+        .navbar {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container, .dashboard-container {
+            max-width: 1200px; /* Adjusted width for the dashboard */
+            margin: auto;
+            background: white;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .buttons, .menu {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin: 0 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .stock-trading-game, .overview, .performance, .game-info, .holdings {
+            background-color: #f0f0f0; /* Light grey background for sections */
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Additional dashboard styles */
+        .menu button {
+            /* This affects the menu buttons differently if needed */
+        }
+
+        .dashboard-container {
+            /* Specific styles for dashboard layout */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">Stock Trading Game</div>
+    
+    <div class="container dashboard-container"> <!-- Combined container class for dashboard -->
+        <div class="menu">
+            <button id="homeButton">HOME</button>
+            <button id="portfolioButton">PORTFOLIO</button>
+            <button id="competitorsPortfolioButton">Competitors</button>
+            <button id="tradeButton">TRADE</button>
+            <button id="profileButton">PROFILE</button>
+            <button id="gameButton">GAMES</button>
+            <button id="logoutButton">LOGOUT</button>
+        </div>
+        
+        <div class="dashboard">
+            <div class="overview">
+                <h2>Overview</h2>
+                <p>Username:</p>
+                <p>Today's Change: +$0.00 (0.00%)</p>
+                <p>Annual Return: 0.00%</p>
+                <p>Buying Power: $100,000.00</p>
+                <p>Cash: 0.00</p>
+            </div>
+
+            <div class="game-info">
+                <p></p>
+                <p></p>
+            </div>
+            <div class="holdings">
+                <h2>Holdings</h2>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="js/utilities.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module">
+        let currentUserData = null;
+        async function fetchUserData(username) {
+            
+            try {
+                const response = await fetch(`/api/users/data/${username}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // If your API requires an authentication token, include it here
+                    },
+                });
+                const userData = await response.json();
+                if (response.ok) {
+                    document.querySelector('.overview').querySelectorAll('p')[0].textContent = `Username: ${userData.username}`;
+
+                // Assume "Today's Change" and "Annual Return" need to be calculated or fetched separately
+                // and therefore not updated directly here
+
+                // Update Buying Power, assuming it's equal to cash for demonstration purposes
+                    document.querySelector('.overview').querySelectorAll('p')[3].textContent = `Buying Power: $${parseFloat(userData.cash).toFixed(2)}`;
+
+                    // Update Cash
+                    document.querySelector('.overview').querySelectorAll('p')[4].textContent = `Cash: $${parseFloat(userData.cash).toFixed(2)}`;
+                
+                    console.log(userData); // For example, logging the user data
+                    // You'd typically update the DOM elements here based on userData
+                    currentUserData = userData; // Store fetched userData for later use
+                    console.log(userData);
+                } else {
+                    throw new Error(userData.message || 'Failed to fetch user data');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // Redirect to login or handle error
+            }
+        }
+        function displayOverviewData() {
+        // Assuming you have the user's original overview data stored,
+        // here's how you might repopulate the overview section:
+        const overviewDiv = document.querySelector('.overview');
+        overviewDiv.innerHTML = `<h2>Overview</h2>
+                                 <p>Username: ${currentUserData.username}</p>
+                                 <p>Today's Change: +$0.00 (0.00%)</p>
+                                 <p>Annual Return: 0.00%</p>
+                                 <p>Buying Power: $${parseFloat(currentUserData.cash).toFixed(2)}</p>
+                                 <p>Cash: $${parseFloat(currentUserData.cash).toFixed(2)}</p>`;
+        }
+        function displayPortfolioData() {
+        // Clear the Overview content
+        const overviewDiv = document.querySelector('.overview');
+        overviewDiv.innerHTML = '<h2>Portfolio</h2>'; // Set the title to "Portfolio"
+
+        // Check if the portfolio is empty
+        if (currentUserData && currentUserData.portfolio.length === 0) {
+            // If the portfolio is empty, add a message indicating that
+            const noHoldingsMsg = document.createElement('p');
+            noHoldingsMsg.textContent = 'No holdings to display.';
+            overviewDiv.appendChild(noHoldingsMsg);
+        } else {
+            // If there are holdings, list them in the Overview
+            currentUserData.portfolio.forEach(stock => {
+                const stockInfo = document.createElement('p');
+                stockInfo.textContent = `Symbol: ${stock.symbol}, Quantity: ${stock.quantity}, Total Price: $${stock.purchasePrice}`;
+                overviewDiv.appendChild(stockInfo);
+            });
+        }
+    }
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username');
+            if (username) {
+                fetchUserData(username);
+            } else {
+                window.location.href = "/signin.html"; // Redirect to login if username not found
+            }
+            document.getElementById('homeButton').addEventListener('click', displayOverviewData);
+            document.getElementById('portfolioButton').addEventListener('click', displayPortfolioData);
+            document.getElementById('tradeButton').addEventListener('click', () => {
+            window.location.href = 'trade.html';
+        });
+
+            const competitorsPortfolioButton = document.getElementById('competitorsPortfolioButton');
+            competitorsPortfolioButton.addEventListener('click', () => {
+                window.location.href = 'competitorsPortfolio.html'; 
+        
+        });
+        document.getElementById('profileButton').addEventListener('click', () => {
+            window.location.href = 'profile.html';
+        });
+        document.getElementById('gameButton').addEventListener('click', () => {
+            window.location.href = 'access.html';
+        });
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%; /* or any other max-width */
+    margin: auto; /* this will center your content */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* for better visibility */
+  }
+
+h1 {
+    color: #333;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.stock-trading-game {
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+.trade-section {
+    width: 80%; /* or some other width */
+    margin: 0 auto; /* This centers the div */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

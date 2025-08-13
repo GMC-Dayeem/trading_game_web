@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Game - Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <button id="homeButton">Home</button>
+    </div>
+
+    <div class="container">
+        <h1>Create a New Game</h1>
+        <form id="createGameForm">
+            <label for="name">Game Name:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea>
+            
+            <label for="startTime">Start Time:</label>
+            <input type="datetime-local" id="startTime" name="startTime" required>
+            
+            <label for="endTime">End Time:</label>
+            <input type="datetime-local" id="endTime" name="endTime" required>
+            
+            <label for="initialCash">Initial Cash Amount:</label>
+            <input type="number" id="initialCash" name="initialCash" required>
+            
+            <label for="transactionFee">Transaction Fee:</label>
+            <input type="number" id="transactionFee" name="transactionFee">
+            
+            <input type="hidden" id="createdBy" name="createdBy" value="adminUserId"> <!-- Replace adminUserId with actual admin user ID -->
+
+            <button type="submit">Create Game</button>
+        </form>
+        <div id="message" style="display: none;"></div>
+        <h2>Declare Winner</h2>
+        <button id="declareWinnerBtn">Declare Winner</button>
+        <div id="winnerMessage" style="display: none;"></div>
+    </div>
+
+    <script type="module" src="./js/createGame.js"></script>
+    <script type="module">
+        document.getElementById('declareWinnerBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/admin/declare-winner', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include any required authentication headers here
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                document.getElementById('winnerMessage').textContent = `Winner: ${result.winner.username}, Total Value: ${result.winner.totalValue}`;
+                document.getElementById('winnerMessage').style.display = 'block';
+            } catch (error) {
+                console.error('There was a problem declaring the winner:', error);
+                document.getElementById('winnerMessage').textContent = 'Error declaring winner. Please try again.';
+                document.getElementById('winnerMessage').style.display = 'block';
+            }
+        });
+
+        
+    </script>
+</body>
+</html>

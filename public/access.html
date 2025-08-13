@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Admin Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <button id="homeButton">Home</button>
+        <!-- Optionally include other navigation buttons here -->
+    </div>
+    <div class="container">
+        <h1>Game Admin Access</h1>
+        <form id="adminAccessForm">
+            <div class="form-group">
+                <label for="accessKey">Access Key:</label>
+                <input type="password" id="accessKey" name="accessKey" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div id="errorMessage" style="color: red; display: none;">Invalid access key. Please try again.</div>
+    </div>
+
+    <script type="module">
+        const adminAccessForm = document.getElementById('adminAccessForm');
+        const errorMessage = document.getElementById('errorMessage');
+
+        adminAccessForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const accessKeyInput = document.getElementById('accessKey');
+            const accessKey = accessKeyInput.value;
+
+            // TODO: Define the correct API endpoint for your server
+            const apiEndpoint = '/api/admin/access';
+
+            try {
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ accessKey }),
+                });
+
+                console.log(response);
+
+                if (response.ok) {
+                    // Redirect to admin panel upon successful login
+                    window.location.href = 'game.html';
+                } else {
+                    // Handle errors, for instance, show an error message
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Invalid access key. Please try again.';
+                }
+            } catch (error) {
+                console.error('Error during fetch operation:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'A network error occurred. Please try again.';
+            }
+         
+        });
+
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
+    </script>
+</body>
+</html>

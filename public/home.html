@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container">
+    <div class="stock-trading-game">
+        <h1>Stock Trading Game:</h1>
+        <p id="stock-trading-game"></p>
+    </div>
+
+        <div class="buttons">
+            <button id="signInButton">Sign In</button>
+            <button id="registrationButton">Register</button>
+        </div>
+    </div>
+
+    <script type="module" src="js/utilities.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module">
+        //  the fetchStockPrice function with the desired symbol
+        async function fetchStockPrice(symbol) {
+            try {
+                const response = await fetchStockData(symbol);
+                document.getElementById('stock-trading-game').textContent = `Stock Price: $${response}`;
+            } catch (error) {
+                console.error('Error fetching stock price:', error.message);
+                document.getElementById('stock-trading-game').textContent = 'Error fetching stock price';
+            }
+        }
+
+        //  the fetchStockPrice function with the desired symbol
+        fetchStockPrice('AAPL'); 
+    </script>
+</body>
+</html>

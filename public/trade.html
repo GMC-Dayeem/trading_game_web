@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Stocks</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <button id="homeButton">Home</button>
+    </div>
+    
+    <div class="trade-section">
+        <h2>Trade Stocks</h2>
+        <div>
+            <label for="symbol">Symbol:</label>
+            <input type="text" id="symbol" name="symbol" required>
+        </div>
+        <div>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" required>
+        </div>
+        <div class="trade-buttons">
+            <button id="buyButton">Buy</button>
+            <button id="sellButton">Sell</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { buyStock, sellStock } from './js/trade.js';
+        // import { buyStock, sellStock } from './js/trade.js';
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = 'dashboard.html'; // Adjust path as necessary
+        });
+
+        document.getElementById('buyButton').addEventListener('click', () => {
+            const symbol = document.getElementById('symbol').value;
+            const quantity = parseInt(document.getElementById('quantity').value, 10);
+            // Assuming buyStock is a function defined in your main.js or another script
+            buyStock(symbol, quantity);
+        });
+
+        document.getElementById('sellButton').addEventListener('click', () => {
+            const symbol = document.getElementById('symbol').value;
+            const quantity = parseInt(document.getElementById('quantity').value, 10);
+            // Assuming sellStock is a function defined in your main.js or another script
+            sellStock(symbol, quantity);
+        });
+    </script>
+</body>
+</html>

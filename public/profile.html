@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitors Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <button id="homeButton">Home</button>
+
+        </div>
+        
+        <div class="competitors-portfolio-section">
+            <h2>User Profile</h2>
+
+            <div id="profileInfo">Loading...</div>
+        </div>
+    
+        <script type="module">
+            async function fetchUserProfile() {
+                try {
+                    const username = localStorage.getItem('username');
+                    const response = await fetch(`/api/users/data/${username}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const profileData = await response.json();
+                    displayProfileInfo(profileData);
+                } catch (error) {
+                    console.error('There has been a problem with your fetch operation:', error);
+                    document.getElementById('profileInfo').textContent = 'Failed to load profile information.';
+                }
+            }
+        
+            function displayProfileInfo(profile) {
+                const profileInfoElement = document.getElementById('profileInfo');
+                let portfolioHtml = '<h3>Portfolio</h3><ul>';
+        
+                profile.portfolio.forEach(stock => {
+                    portfolioHtml += `
+                        <li>
+                            Symbol: ${stock.symbol}, Quantity: ${stock.quantity}, Purchase Price: $${stock.purchasePrice.toFixed(2)}
+                        </li>
+                    `;
+                });
+        
+                portfolioHtml += '</ul>';
+        
+                profileInfoElement.innerHTML = `
+                    <p>Username: ${profile.username}</p>
+                    <p>Cash: $${profile.cash.toFixed(2)}</p>
+                    ${portfolioHtml}
+                `;
+            }
+        
+            document.getElementById('homeButton').addEventListener('click', () => {
+                window.location.href = 'dashboard.html';
+            });
+        
+            fetchUserProfile();
+        </script>   
+    </div>
+    
+</body>
+</html>

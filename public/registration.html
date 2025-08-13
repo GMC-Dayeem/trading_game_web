@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Registration</h2>
+        <form id="registrationForm">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div>
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <div class="buttons">
+                <button type="submit">Register</button>
+            </div>
+        </form>
+        <!-- Home button -->
+        <div class="home-button">
+            <a href="home.html">Home</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { redirectToSignIn } from './js/utilities.js';
+        
+        document.getElementById("registrationForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword')
+            };
+            console.log("overtried")
+
+            try {
+                console.log("tried")
+                const response = await fetch('/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                console.log(result);
+                if (result.username) {
+                    // Redirect to sign in page on successful registration
+                    console.log("success");
+                    redirectToSignIn();
+                } else {
+                    console.log("elsetried")
+                    // Handle registration errors (e.g., show message to user)
+                    alert(result.message);
+                }
+            } catch (error) {
+                // Handle network errors (e.g., show message to user)
+                alert('Network error: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

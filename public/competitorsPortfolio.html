@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitors Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <button id="homeButton">Home</button>
+
+    </div>
+    
+    <div class="competitors-portfolio-section">
+        <h2>Competitors Portfolio</h2>
+        <div id="portfolioList">Loading...</div>
+    </div>
+
+    <script type="module">
+        async function fetchCompetitorsPortfolio() {
+            try {
+                const username = localStorage.getItem('username');
+                const response = await fetch(`/api/users/portfolio/${username}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add your authentication headers if needed
+                    },
+                    // Pass the user ID or any other identifier if needed
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const portfolioData = await response.json();
+                console.log(portfolioData);
+                displayPortfolio(portfolioData.competitorPortfolios);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+
+        function displayPortfolio(competitorPorfolio) {
+            const portfolioListElement = document.getElementById('portfolioList');
+            portfolioListElement.innerHTML = ''; // Clear loading message
+
+            console.log(portfolioListElement);
+
+            competitorPorfolio.forEach(competitor => {
+                const competitorElement = document.createElement('div');
+                competitorElement.className = 'competitor-item';
+                competitorElement.innerHTML = `
+                <h3>  Username: ${competitor.username}</h3>
+                <p>    Total Portfolio Value: $${competitor.portfolioValue.toFixed(2)}</p>
+            `;
+                portfolioListElement.appendChild(competitorElement);
+            });
+        }
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
+
+        fetchCompetitorsPortfolio();
+    </script>
+</body>
+</html>
